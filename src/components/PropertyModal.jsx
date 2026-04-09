@@ -1,0 +1,147 @@
+import React, { useState } from 'react';
+import { X, CheckCircle, PlaySquare, Image as ImageIcon, MapPin, Send } from 'lucide-react';
+import { useLang } from '../contexts/LanguageContext';
+import { useCMS } from '../contexts/CMSContext';
+
+const PropertyModal = ({ property, onClose }) => {
+  const [activeTab, setActiveTab] = useState('gallery');
+  const { lang } = useLang();
+  const { translations: t } = useCMS();
+
+  if (!t) return null;
+
+  const title = property.title;
+  const description = property.description;
+  const highlights = property.highlights || [];
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-charcoal-950/90 backdrop-blur-md"
+        onClick={onClose}
+      ></div>
+
+      {/* Modal Content */}
+      <div className="relative bg-charcoal-900 w-full max-w-6xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl">
+        
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 bg-charcoal-950 text-white p-2 rounded-full hover:bg-gold transition-colors"
+        >
+          <X size={20} />
+        </button>
+
+        {/* Left Column: Media */}
+        <div className="w-full md:w-3/5 bg-charcoal-950 relative min-h-[40vh] md:min-h-full flex flex-col">
+          {/* Tabs */}
+          <div className="absolute top-4 left-4 z-10 flex gap-2">
+            <button 
+              onClick={() => setActiveTab('gallery')}
+              className={`flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-widest backdrop-blur-sm transition-colors ${activeTab === 'gallery' ? 'bg-gold text-white' : 'bg-charcoal-950/50 text-gray-300 hover:bg-charcoal-900'}`}
+            >
+              <ImageIcon size={14} /> {t.modal.gallery[lang]}
+            </button>
+            <button 
+              onClick={() => setActiveTab('video')}
+              className={`flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-widest backdrop-blur-sm transition-colors ${activeTab === 'video' ? 'bg-gold text-white' : 'bg-charcoal-950/50 text-gray-300 hover:bg-charcoal-900'}`}
+            >
+              <PlaySquare size={14} /> {t.modal.virtualTour[lang]}
+            </button>
+          </div>
+
+          <div className="flex-grow flex items-center justify-center p-0">
+            {activeTab === 'gallery' ? (
+              <img 
+                src={property.coverImage} 
+                alt={title} 
+                referrerPolicy="no-referrer"
+                onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
+                className="w-full h-full object-cover max-h-[60vh] md:max-h-none"
+              />
+            ) : (
+              <div className="w-full h-full bg-black flex items-center justify-center min-h-[300px] md:min-h-full">
+                {property.videoUrl ? (
+                  <video 
+                    src={property.videoUrl} 
+                    className="w-full h-full object-contain" 
+                    controls 
+                    autoPlay 
+                    muted 
+                    playsInline
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-charcoal-500">
+                    <PlaySquare size={48} className="mb-4 opacity-50" />
+                    <p className="uppercase tracking-widest text-sm">{t.modal.tourPlaceholder[lang]}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Details & Contact */}
+        <div className="w-full md:w-2/5 p-8 md:p-12 flex flex-col bg-charcoal-950">
+          <div className="mb-2">
+            <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+              <MapPin size={12} className="inline mr-1 -mt-1" />
+              {property.houseNumber} — iLeaf Town
+            </span>
+          </div>
+          
+          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">{title}</h2>
+          <div className="flex items-baseline gap-4 mb-6">
+            <div className="text-2xl font-light text-gold">{property.price}</div>
+            {property.originalPrice && (
+              <div className="text-sm text-gray-500 line-through opacity-60 font-light">
+                {property.originalPrice}
+              </div>
+            )}
+          </div>
+          
+          <p className="text-gray-400 text-sm mb-8 leading-relaxed font-light">
+            {description}
+          </p>
+
+          <div className="mb-8">
+            <h4 className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-4">{t.modal.highlights[lang]}</h4>
+            <ul className="space-y-3">
+              {highlights.map((highlight, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-sm text-gray-400">
+                  <CheckCircle size={16} className="text-gold shrink-0 mt-0.5" />
+                  <span>{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-auto pt-8 border-t border-charcoal-800">
+            <h4 className="text-lg font-display text-white mb-4">{t.modal.requestTour[lang]}</h4>
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <input 
+                type="text" 
+                placeholder={t.modal.yourName[lang]}
+                className="w-full border-b border-charcoal-700 py-2 px-1 focus:outline-none focus:border-gold transition-colors text-sm bg-transparent text-gray-200"
+              />
+              <input 
+                type="tel" 
+                placeholder={t.modal.phone[lang]}
+                className="w-full border-b border-charcoal-700 py-2 px-1 focus:outline-none focus:border-gold transition-colors text-sm bg-transparent text-gray-200"
+              />
+              <button className="w-full bg-gold text-black font-semibold hover:bg-brass hover:text-black py-4 text-sm uppercase tracking-widest transition-colors duration-300 flex items-center justify-center gap-2 mt-4">
+                <Send size={16} /> {t.modal.sendRequest[lang]}
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default PropertyModal;
