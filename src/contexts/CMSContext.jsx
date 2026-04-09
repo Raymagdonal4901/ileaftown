@@ -5,7 +5,7 @@ import defaultTranslations from '../data/translations';
 
 const CMSContext = createContext();
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const CMSProvider = ({ children }) => {
   const [properties, setProperties] = useState([]);
@@ -150,6 +150,15 @@ export const CMSProvider = ({ children }) => {
     return res.data.url;
   };
 
+  const uploadMultipleFiles = async (files) => {
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+    const res = await axios.post(`${API_URL}/upload-multiple`, formData);
+    return res.data.urls;
+  };
+
   return (
     <CMSContext.Provider value={{ 
       properties, 
@@ -159,7 +168,8 @@ export const CMSProvider = ({ children }) => {
       deleteProperty, 
       addProperty,
       updateAllTranslations,
-      uploadFile
+      uploadFile,
+      uploadMultipleFiles
     }}>
       {children}
     </CMSContext.Provider>

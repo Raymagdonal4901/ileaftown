@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, PlaySquare, Image as ImageIcon, MapPin, Send } from 'lucide-react';
+import { X, CheckCircle, PlaySquare, Image as ImageIcon, MapPin, Send, ChevronRight } from 'lucide-react';
 import { useLang } from '../contexts/LanguageContext';
 import { useCMS } from '../contexts/CMSContext';
 
 const PropertyModal = ({ property, onClose }) => {
   const [activeTab, setActiveTab] = useState('gallery');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { lang } = useLang();
   const { translations: t } = useCMS();
 
@@ -51,15 +52,53 @@ const PropertyModal = ({ property, onClose }) => {
             </button>
           </div>
 
-          <div className="flex-grow flex items-center justify-center p-0">
+          <div className="flex-grow flex flex-col items-center justify-center p-0">
             {activeTab === 'gallery' ? (
-              <img 
-                src={property.coverImage} 
-                alt={title} 
-                referrerPolicy="no-referrer"
-                onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
-                className="w-full h-full object-cover max-h-[60vh] md:max-h-none"
-              />
+              <div className="w-full h-full flex flex-col">
+                <div className="flex-grow flex items-center justify-center bg-black overflow-hidden relative min-h-[40vh] md:min-h-[500px]">
+                  <img 
+                    src={(property.gallery && property.gallery.length > 0) ? property.gallery[currentImageIndex] : property.coverImage} 
+                    alt={title} 
+                    referrerPolicy="no-referrer"
+                    onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
+                    className="w-full h-full object-cover md:object-contain"
+                  />
+                  
+                  {/* Gallery Navigation Arrows (if more than 1 image) */}
+                  {property.gallery && property.gallery.length > 1 && (
+                    <>
+                      <button 
+                        onClick={() => setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : property.gallery.length - 1))}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 text-white hover:bg-gold transition-colors rounded-full"
+                      >
+                        <ChevronRight size={20} className="rotate-180" />
+                      </button>
+                      <button 
+                        onClick={() => setCurrentImageIndex(prev => (prev < property.gallery.length - 1 ? prev + 1 : 0))}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 text-white hover:bg-gold transition-colors rounded-full"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* Thumbnails */}
+                {property.gallery && property.gallery.length > 0 && (
+                  <div className="flex gap-2 p-4 bg-charcoal-900 border-t border-charcoal-800 overflow-x-auto no-scrollbar">
+                    {/* Include Cover Image if it's not already in the gallery or just always the gallery */}
+                    {property.gallery.map((url, idx) => (
+                      <button 
+                        key={idx} 
+                        onClick={() => setCurrentImageIndex(idx)}
+                        className={`w-20 h-16 shrink-0 border-2 transition-all ${currentImageIndex === idx ? 'border-gold' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                      >
+                        <img src={url} className="w-full h-full object-cover" alt="" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="w-full h-full bg-black flex items-center justify-center min-h-[300px] md:min-h-full">
                 {property.videoUrl ? (

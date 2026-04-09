@@ -11,7 +11,7 @@ const AdminDashboard = () => {
   const { 
     properties, translations, loading, 
     addProperty, updateProperty, deleteProperty, 
-    updateAllTranslations, uploadFile 
+    updateAllTranslations, uploadFile, uploadMultipleFiles 
   } = useCMS();
 
   const [activeTab, setActiveTab] = useState('properties');
@@ -33,6 +33,7 @@ const AdminDashboard = () => {
     kitchens: '',
     coverImage: '',
     videoUrl: '',
+    gallery: [],
     highlights: ['']
   };
   const [formState, setFormState] = useState(initialFormState);
@@ -90,6 +91,29 @@ const AdminDashboard = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleGalleryUpload = async (files) => {
+    if (files.length === 0) return;
+    setIsSaving(true);
+    try {
+      const urls = await uploadMultipleFiles(files);
+      setFormState(prev => ({ 
+        ...prev, 
+        gallery: [...(prev.gallery || []), ...urls] 
+      }));
+    } catch (e) {
+      alert('อัปโหลดรูปภาพแกลเลอรี่ล้มเหลว');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const removeGalleryImage = (index) => {
+    setFormState(prev => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index)
+    }));
   };
 
   const saveProperty = async () => {
@@ -319,6 +343,37 @@ const AdminDashboard = () => {
                     </label>
                   </div>
                   <p className="text-[10px] text-gray-500 mt-2 italic">*รองรับการอัปโหลดไฟล์จริงจากเครื่อง และจะถูกจัดเก็บในระบบ</p>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-xs uppercase tracking-widest text-gold font-bold italic">อัลบั้มรูปภาพ (Gallery Images)</label>
+                    <label className="cursor-pointer text-[10px] uppercase tracking-widest text-gray-400 hover:text-gold flex items-center gap-1 font-bold">
+                      {isSaving ? <Loader2 className="animate-spin" size={12} /> : <Plus size={12} />}
+                      เพิ่มรูปในอัลบั้ม
+                      <input type="file" className="hidden" accept="image/*" multiple onChange={(e) => handleGalleryUpload(e.target.files)} />
+                    </label>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-4 max-h-48 overflow-y-auto p-2 bg-black/20 border border-charcoal-800 custom-scrollbar">
+                    {formState.gallery && formState.gallery.map((url, idx) => (
+                      <div key={idx} className="relative aspect-square border border-charcoal-700 group">
+                        <img src={url} className="w-full h-full object-cover" alt="" />
+                        <button 
+                          onClick={() => removeGalleryImage(idx)}
+                          className="absolute -top-1 -right-1 bg-red-600 p-0.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X size={10} />
+                        </button>
+                      </div>
+                    ))}
+                    {(!formState.gallery || formState.gallery.length === 0) && (
+                      <div className="col-span-full py-8 text-center text-[10px] text-gray-600 uppercase tracking-widest">
+                        ยังไม่มีรูปในอัลบั้ม
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-gray-500 italic">*เลือกหลายไฟล์ได้พร้อมกัน รูปภาพจะถูกส่งไปเก็บที่ Cloudinary</p>
                 </div>
 
                 <div>

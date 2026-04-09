@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const multer = require('multer');
+const { v2: cloudinary } = require('cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const path = require('path');
 const fs = require('fs');
 
@@ -20,11 +22,24 @@ if (!fs.existsSync(uploadDir)) {
 }
 app.use('/uploads', express.static(uploadDir));
 
-// Setup Multer for image upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'))
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// Setup Cloudinary Storage for Multer
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'ileaf-luxury-showcase',
+    resource_type: 'auto', // Important for supporting both images and videos
+    allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'webm'],
+    public_id: (req, file) => Date.now() + '-' + file.originalname.split('.')[0].replace(/\s+/g, '-')
+  },
+});
+
 const upload = multer({ storage });
 
 // Connect to MongoDB
@@ -108,12 +123,18 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // --- ROUTES ---
 
-// 1. Upload API (Supports images and videos)
+// 1. Upload API (Supports images and videos - Cloudinary)
 app.post('/api/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
-  // Return the public URL for the uploaded file
-  const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl });
+  // Cloudinary returns the secure_url in req.file.path
+  res.json({ url: req.file.path });
+});
+
+// 1b. Multiple Upload API for Gallery
+app.post('/api/upload-multiple', upload.array('files', 10), (req, res) => {
+  if (!req.files || req.files.length === 0) return res.status(400).send('No files uploaded.');
+  const urls = req.files.map(file => file.path);
+  res.json({ urls });
 });
 
 // 2. Properties API
