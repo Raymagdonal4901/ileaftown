@@ -9,6 +9,12 @@ const PropertyCard = ({ property, onClick }) => {
 
   if (!t) return null;
 
+  const handleDetailsClick = (e) => {
+    e.stopPropagation();
+    incrementView(property.propertyId);
+    onClick();
+  };
+
   const title = property.title;
   const description = property.description;
 
@@ -16,9 +22,9 @@ const PropertyCard = ({ property, onClick }) => {
     <div className="bg-charcoal-900 group cursor-pointer border border-charcoal-800 hover:border-gold/30 transition-all duration-500 shadow-sm hover:shadow-xl overflow-hidden flex flex-col h-full">
       {/* Image Container */}
       <div className="relative h-72 overflow-hidden">
-        <div className="absolute top-4 left-4 z-10 bg-charcoal-950/80 backdrop-blur-sm text-white px-3 py-1 text-xs tracking-widest uppercase flex items-center gap-2">
-          <Eye size={12} className="text-gold" />
-          <span>{(property.views || 0).toLocaleString()} {t.card.views[lang]}</span>
+        <div className="absolute top-4 left-4 z-10 bg-black/70 backdrop-blur-md text-white px-4 py-2 text-xs tracking-widest uppercase flex items-center gap-2 border border-white/10">
+          <Eye size={14} className="text-gold" />
+          <span className="font-display font-bold">{(property.views || 0).toLocaleString()} {t.card.views[lang]}</span>
         </div>
         {property.originalPrice && (
           <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-lg">

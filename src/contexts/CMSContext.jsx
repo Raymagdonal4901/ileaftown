@@ -159,6 +159,20 @@ export const CMSProvider = ({ children }) => {
     return res.data.urls;
   };
 
+  const incrementView = async (propertyId) => {
+    try {
+      // Optimistic update
+      setProperties(prev => prev.map(p => 
+        p.propertyId === propertyId ? { ...p, views: (p.views || 0) + 1 } : p
+      ));
+      
+      // Send to server
+      await axios.post(`${API_URL}/properties/${propertyId}/view`);
+    } catch (e) {
+      console.error('Error incrementing view:', e);
+    }
+  };
+
   return (
     <CMSContext.Provider value={{ 
       properties, 
@@ -169,7 +183,8 @@ export const CMSProvider = ({ children }) => {
       addProperty,
       updateAllTranslations,
       uploadFile,
-      uploadMultipleFiles
+      uploadMultipleFiles,
+      incrementView
     }}>
       {children}
     </CMSContext.Provider>

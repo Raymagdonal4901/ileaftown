@@ -175,6 +175,20 @@ app.delete('/api/properties/:id', async (req, res) => {
   }
 });
 
+// 2b. Increment Property Views
+app.post('/api/properties/:id/view', async (req, res) => {
+  try {
+    const updated = await Property.findOneAndUpdate(
+      { propertyId: req.params.id }, 
+      { $inc: { views: 1 } }, 
+      { new: true }
+    );
+    res.json({ views: updated.views });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // 3. Translations API
 app.get('/api/translations', async (req, res) => {
   try {
