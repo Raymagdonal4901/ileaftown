@@ -34,19 +34,29 @@ const PropertyModal = ({ property, onClose }) => {
           <X size={20} />
         </button>
 
+        {/* Mobile Header: Visible only on mobile, placed above images */}
+        <div className="md:hidden p-6 bg-charcoal-900 border-b border-white/5">
+          <div className="text-[10px] text-gold uppercase tracking-[0.2em] font-bold mb-1 opacity-80">
+            <MapPin size={10} className="inline mr-1 -mt-0.5" />
+            {property.houseNumber} — iLeaf Town
+          </div>
+          <h2 className="font-display text-2xl text-white mb-2">{title}</h2>
+          <div className="text-xl font-light text-gold">{property.price}</div>
+        </div>
+
         {/* Left Column: Media */}
         <div className="w-full md:w-3/5 bg-charcoal-950 relative min-h-[35vh] md:min-h-full flex flex-col border-r border-white/5">
-          {/* Tabs */}
-          <div className="absolute top-4 left-4 z-10 flex gap-2">
+          {/* Tabs - Moved to be relative/static on mobile, absolute on desktop */}
+          <div className="relative md:absolute md:top-4 md:left-4 z-10 flex gap-px md:gap-2 bg-charcoal-900 md:bg-transparent">
             <button 
               onClick={() => setActiveTab('gallery')}
-              className={`flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-widest backdrop-blur-sm transition-colors ${activeTab === 'gallery' ? 'bg-gold text-white' : 'bg-charcoal-950/50 text-gray-300 hover:bg-charcoal-900'}`}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 md:px-4 md:py-2 text-[10px] md:text-xs uppercase tracking-widest transition-colors ${activeTab === 'gallery' ? 'bg-gold text-white' : 'bg-charcoal-950/50 text-gray-400 hover:bg-charcoal-900'}`}
             >
               <ImageIcon size={14} /> {t.modal.gallery[lang]}
             </button>
             <button 
               onClick={() => setActiveTab('video')}
-              className={`flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-widest backdrop-blur-sm transition-colors ${activeTab === 'video' ? 'bg-gold text-white' : 'bg-charcoal-950/50 text-gray-300 hover:bg-charcoal-900'}`}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 md:px-4 md:py-2 text-[10px] md:text-xs uppercase tracking-widest transition-colors ${activeTab === 'video' ? 'bg-gold text-white' : 'bg-charcoal-950/50 text-gray-400 hover:bg-charcoal-900'}`}
             >
               <PlaySquare size={14} /> {t.modal.virtualTour[lang]}
             </button>
@@ -63,15 +73,6 @@ const PropertyModal = ({ property, onClose }) => {
                     onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
                     className="w-full h-full object-cover md:object-contain"
                   />
-
-                  {/* Mobile Mobile-only Info Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent md:hidden">
-                    <div className="text-[10px] text-gold uppercase tracking-[0.2em] font-bold mb-1 opacity-80">{property.houseNumber} — iLeaf Town</div>
-                    <div className="flex justify-between items-end">
-                      <h3 className="text-white font-display text-xl">{title}</h3>
-                      <div className="text-gold font-light">{property.price}</div>
-                    </div>
-                  </div>
                   
                   {/* Gallery Navigation Arrows (if more than 1 image) */}
                   {property.gallery && property.gallery.length > 1 && (
@@ -134,21 +135,24 @@ const PropertyModal = ({ property, onClose }) => {
 
         {/* Right Column: Details & Contact (Scrollable on mobile by parent, unique on desktop) */}
         <div className="w-full md:w-2/5 p-8 md:p-12 flex flex-col bg-charcoal-950 overflow-y-auto custom-scrollbar">
-          <div className="mb-2">
-            <span className="text-gold text-xs font-semibold tracking-widest uppercase">
-              <MapPin size={12} className="inline mr-1 -mt-1" />
-              {property.houseNumber} — iLeaf Town
-            </span>
-          </div>
-          
-          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">{title}</h2>
-          <div className="flex items-baseline gap-4 mb-6">
-            <div className="text-2xl font-light text-gold">{property.price}</div>
-            {property.originalPrice && (
-              <div className="text-sm text-gray-500 line-through opacity-60 font-light">
-                {property.originalPrice}
-              </div>
-            )}
+          {/* Desktop Header: Hidden on mobile since it has its own header at the top */}
+          <div className="hidden md:block">
+            <div className="mb-2">
+              <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+                <MapPin size={12} className="inline mr-1 -mt-1" />
+                {property.houseNumber} — iLeaf Town
+              </span>
+            </div>
+            
+            <h2 className="font-display text-3xl md:text-4xl text-white mb-4">{title}</h2>
+            <div className="flex items-baseline gap-4 mb-6">
+              <div className="text-2xl font-light text-gold">{property.price}</div>
+              {property.originalPrice && (
+                <div className="text-sm text-gray-500 line-through opacity-60 font-light">
+                  {property.originalPrice}
+                </div>
+              )}
+            </div>
           </div>
           
           <p className="text-gray-400 text-sm mb-8 leading-relaxed font-light">
