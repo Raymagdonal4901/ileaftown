@@ -120,15 +120,22 @@ const t = {
     shopping: {
       title: { th: 'ห้างสรรพสินค้า', en: 'Shopping & Lifestyle' },
       list:  { 
-        th: ['ฟิวเจอร์ พาร์ค รังสิต', 'บิ๊กซี (Big C)', 'โลตัส (Lotus\'s)'], 
-        en: ['Future Park Rangsit', 'Big C Supercenter', 'Lotus\'s Rangsit'] 
+        th: ['ฟิวเจอร์พาร์ครังสิต 7.5 กม', 'โลตัสคลองสี่ 2.3 กม', 'Market Village 2.8 กม', 'ตลาดดีดีมาเช่ 1.6 กม'], 
+        en: ['Future Park Rangsit 7.5 km', 'Lotus\'s Khlong Si 2.3 km', 'Market Village 2.8 km', 'DD Marche Market 1.6 km'] 
       }
     },
     education: {
       title: { th: 'สถานศึกษา', en: 'Education' },
       list:  { 
-        th: ['โรงเรียนนานาชาติ', 'มหาวิทยาลัยนอร์ทกรุงเทพ'], 
-        en: ['International Schools', 'North Bangkok University'] 
+        th: ['โรงเรียนโชคชัยรังสิต 1.9 กม', 'โรงเรียนแย้มสะอาดรังสิต 5.2 กม'], 
+        en: ['Chokchai Rangsit School 1.9 km', 'Yam Sa-at Rangsit School 5.2 km'] 
+      }
+    },
+    connectivity: {
+      title: { th: 'จุดเชื่อมต่อการเดินทาง', en: 'Connectivity' },
+      list: {
+        th: ['ทางขึ้นมอเตอร์เวย์ด่านธัญบุรี 5.5 กม'],
+        en: ['Thanyaburi Motorway Entrance 5.5 km']
       }
     },
     healthcare: {

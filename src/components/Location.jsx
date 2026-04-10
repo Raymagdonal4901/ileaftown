@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, BookOpen, Stethoscope, MapPin, X, ZoomIn } from 'lucide-react';
+import { ShoppingBag, BookOpen, Stethoscope, MapPin, X, ZoomIn, Navigation } from 'lucide-react';
 import { useLang } from '../contexts/LanguageContext';
 import { useCMS } from '../contexts/CMSContext';
 
@@ -25,6 +25,11 @@ const Location = () => {
       icon: <Stethoscope className="text-gold" size={24} />,
       title: t.location.healthcare.title[lang],
       items: t.location.healthcare.list[lang]
+    },
+    {
+      icon: <Navigation className="text-gold" size={24} />,
+      title: t.location.connectivity.title[lang],
+      items: t.location.connectivity.list[lang]
     }
   ];
 
