@@ -211,12 +211,10 @@ const AdminDashboard = () => {
                 <h2 className="text-3xl font-display text-white italic">รายการทรัพย์สิน</h2>
                 <p className="text-gray-400 text-sm mt-1">จัดการ เพิ่ม ลบ หรือแก้ไขรายละเอียดบ้านในฐานข้อมูล MongoDB Atlas</p>
               </div>
-              <button 
-                onClick={() => setIsAdding(true)}
-                className="bg-gold text-black font-semibold px-6 py-3 rounded-none hover:bg-brass transition-all flex items-center gap-2 uppercase tracking-widest text-xs"
-              >
-                <Plus size={18} /> เพิ่มบ้านหลังใหม่
-              </button>
+              <div className="flex gap-2 bg-charcoal-900 px-4 py-2 text-gold text-[10px] items-center border border-gold/20 italic">
+                <Loader2 size={12} className="animate-spin" />
+                โหมดแก้ไขข้อมูลเท่านั้น (ไม่สามารถเพิ่มรายการใหม่ได้)
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -403,17 +401,11 @@ const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between items-center mb-4">
                     <label className="text-xs uppercase tracking-widest text-gold font-bold italic">จุดเด่นของบ้าน (Highlights)</label>
-                    <button onClick={addHighlightField} className="text-[10px] uppercase tracking-widest text-gray-400 hover:text-gold flex items-center gap-1 font-bold">
-                      <Plus size={12} /> เพิ่มข้อความจุดเด่น
-                    </button>
-                  </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                     {formState.highlights.map((h, idx) => (
                       <div key={idx} className="flex gap-2">
                         <input value={h} onChange={(e) => handleHighlightChange(idx, e.target.value)} className="flex-grow bg-charcoal-950 border border-charcoal-800 p-2 text-sm focus:border-gold outline-none font-sans" />
-                        <button onClick={() => removeHighlightField(idx)} className="text-gray-500 hover:text-red-500"><X size={16} /></button>
                       </div>
                     ))}
                   </div>
