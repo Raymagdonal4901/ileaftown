@@ -5,13 +5,13 @@ import { useCMS } from '../contexts/CMSContext';
 
 const PropertyCard = ({ property, onClick }) => {
   const { lang } = useLang();
-  const { translations: t } = useCMS();
+  const { translations: t, incrementView } = useCMS();
 
   if (!t) return null;
 
   const handleDetailsClick = (e) => {
     e.stopPropagation();
-    incrementView(property.propertyId);
+    if (incrementView) incrementView(property.propertyId);
     onClick();
   };
 
@@ -84,8 +84,8 @@ const PropertyCard = ({ property, onClick }) => {
         </div>
 
         <button 
-          onClick={onClick}
-          className="w-full bg-black text-white hover:bg-gold hover:text-black py-3 text-sm uppercase tracking-widest transition-colors duration-300 font-semibold"
+          onClick={handleDetailsClick}
+          className="w-full bg-black text-white hover:bg-gold hover:text-black py-4 text-xs uppercase tracking-[0.2em] transition-all duration-500 font-bold border border-white/10 hover:border-gold"
         >
           {t.card.viewBtn[lang]}
         </button>
