@@ -24,7 +24,7 @@ const PropertyModal = ({ property, onClose }) => {
       ></div>
 
       {/* Modal Content */}
-      <div className="relative bg-charcoal-900 w-full max-w-6xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl">
+      <div className="relative bg-charcoal-900 w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-white/5">
         
         {/* Close Button */}
         <button 
@@ -35,7 +35,7 @@ const PropertyModal = ({ property, onClose }) => {
         </button>
 
         {/* Left Column: Media */}
-        <div className="w-full md:w-3/5 bg-charcoal-950 relative min-h-[40vh] md:min-h-full flex flex-col">
+        <div className="w-full md:w-3/5 bg-charcoal-950 relative min-h-[35vh] md:min-h-full flex flex-col border-r border-white/5">
           {/* Tabs */}
           <div className="absolute top-4 left-4 z-10 flex gap-2">
             <button 
@@ -63,6 +63,15 @@ const PropertyModal = ({ property, onClose }) => {
                     onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
                     className="w-full h-full object-cover md:object-contain"
                   />
+
+                  {/* Mobile Mobile-only Info Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent md:hidden">
+                    <div className="text-[10px] text-gold uppercase tracking-[0.2em] font-bold mb-1 opacity-80">{property.houseNumber} — iLeaf Town</div>
+                    <div className="flex justify-between items-end">
+                      <h3 className="text-white font-display text-xl">{title}</h3>
+                      <div className="text-gold font-light">{property.price}</div>
+                    </div>
+                  </div>
                   
                   {/* Gallery Navigation Arrows (if more than 1 image) */}
                   {property.gallery && property.gallery.length > 1 && (
@@ -123,8 +132,8 @@ const PropertyModal = ({ property, onClose }) => {
           </div>
         </div>
 
-        {/* Right Column: Details & Contact */}
-        <div className="w-full md:w-2/5 p-8 md:p-12 flex flex-col bg-charcoal-950">
+        {/* Right Column: Details & Contact (Scrollable on mobile by parent, unique on desktop) */}
+        <div className="w-full md:w-2/5 p-8 md:p-12 flex flex-col bg-charcoal-950 overflow-y-auto custom-scrollbar">
           <div className="mb-2">
             <span className="text-gold text-xs font-semibold tracking-widest uppercase">
               <MapPin size={12} className="inline mr-1 -mt-1" />
