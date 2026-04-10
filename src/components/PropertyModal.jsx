@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { X, CheckCircle, PlaySquare, Image as ImageIcon, MapPin, Send, ChevronRight } from 'lucide-react';
 import { useLang } from '../contexts/LanguageContext';
 import { useCMS } from '../contexts/CMSContext';
+import ImageLightbox from './ImageLightbox';
 
 const PropertyModal = ({ property, onClose }) => {
   const [activeTab, setActiveTab] = useState('gallery');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showLightbox, setShowLightbox] = useState(false);
   const { lang } = useLang();
   const { translations: t } = useCMS();
 
@@ -65,13 +67,14 @@ const PropertyModal = ({ property, onClose }) => {
           <div className="flex-grow flex flex-col items-center justify-center p-0">
             {activeTab === 'gallery' ? (
               <div className="w-full h-full flex flex-col">
-                <div className="flex-grow flex items-center justify-center bg-black overflow-hidden relative min-h-[40vh] md:min-h-[500px]">
+                <div className="flex-grow flex items-center justify-center bg-black overflow-hidden relative aspect-video">
                   <img 
                     src={(property.gallery && property.gallery.length > 0) ? property.gallery[currentImageIndex] : property.coverImage} 
                     alt={title} 
                     referrerPolicy="no-referrer"
                     onError={(e) => { e.target.onError = null; e.target.src = 'https://placehold.co/1200x800/1a1a1a/D4AF37?text=Image+Unavailable' }}
-                    className="w-full h-full object-cover md:object-contain"
+                    className="w-full h-full object-cover cursor-zoom-in"
+                    onClick={() => setShowLightbox(true)}
                   />
                   
                   {/* Gallery Navigation Arrows (if more than 1 image) */}
@@ -191,6 +194,15 @@ const PropertyModal = ({ property, onClose }) => {
           </div>
         </div>
 
+        {/* Lightbox */}
+        {showLightbox && (
+          <ImageLightbox 
+            images={property.gallery && property.gallery.length > 0 ? property.gallery : [property.coverImage]}
+            currentIndex={currentImageIndex}
+            onClose={() => setShowLightbox(false)}
+            onIndexChange={(index) => setCurrentImageIndex(index)}
+          />
+        )}
       </div>
     </div>
   );

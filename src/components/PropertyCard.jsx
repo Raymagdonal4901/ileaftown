@@ -21,7 +21,7 @@ const PropertyCard = ({ property, onClick }) => {
   return (
     <div className="bg-charcoal-900 group cursor-pointer border border-charcoal-800 hover:border-gold/30 transition-all duration-500 shadow-sm hover:shadow-xl overflow-hidden flex flex-col h-full">
       {/* Image Container */}
-      <div className="relative h-72 overflow-hidden">
+      <div className="relative aspect-video overflow-hidden">
         <div className="absolute top-4 left-4 z-10 bg-black/70 backdrop-blur-md text-white px-4 py-2 text-xs tracking-widest uppercase flex items-center gap-2 border border-white/10">
           <Eye size={14} className="text-gold" />
           <span className="font-display font-bold">{(property.views || 0).toLocaleString()} {t.card.views[lang]}</span>
